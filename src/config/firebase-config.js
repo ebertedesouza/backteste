@@ -1,15 +1,22 @@
-const admin = require('firebase-admin');
-const serviceAccount = require('./pizzariaapp-4662b-firebase-adminsdk-myun3-da0f4283cb.json');
+import admin from 'firebase-admin';
+import dotenv from 'dotenv';
+dotenv.config();
+
+const serviceAccount = {
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+  privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+};
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
-async function sendNotificationToDevice(token, mesaNumero) {
+async function sendNotificationToDevice(token, message) {
   const payload = {
     notification: {
       title: 'Mesa excluída',
-      body: `A mesa número ${mesaNumero} foi excluída.`,
+      body: message,
     },
   };
 
@@ -21,4 +28,4 @@ async function sendNotificationToDevice(token, mesaNumero) {
   }
 }
 
-module.exports = { sendNotificationToDevice };
+export { sendNotificationToDevice };
